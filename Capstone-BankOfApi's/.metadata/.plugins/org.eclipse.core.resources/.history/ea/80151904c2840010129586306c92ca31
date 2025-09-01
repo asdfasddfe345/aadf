@@ -1,0 +1,13 @@
+package com.example.user_service.dto;
+
+public class RegisterRequest {
+
+	private String name;
+    private String username;
+    private String email;
+    private String phone;
+    private String password;
+    private String address;
+    private String otp;
+    
+}

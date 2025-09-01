@@ -1,0 +1,45 @@
+package com.example.account_service.security;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import com.example.account_service.service.JwtUtil;
+
+@Component
+public class JwtAuthenticationFilter extends OncePerRequestFilter{
+	 @Autowired
+	    private JwtUtil jwtUtil;
+	 
+	 
+	 @Override
+	    protected void doFilterInternal(HttpServletRequest request,
+	                                    HttpServletResponse response,
+	                                    FilterChain filterChain)
+	                                    throws ServletException, IOException {
+
+	        String authHeader = request.getHeader("Authorization");
+
+	        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+	            String token = authHeader.substring(7);
+
+	            if (jwtUtil.validateToken(token)) {
+	                // Optionally, you can extract user info for service use
+	                String username = jwtUtil.extractUsername(token);
+	                request.setAttribute("username", username);
+	            } else {
+	                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+	                return;
+	            }
+	        } else {
+	            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+	            return;
+	        }
+
+	        filterChain.doFilter(request, response);
+	    }
+	 
+}
+
+
+

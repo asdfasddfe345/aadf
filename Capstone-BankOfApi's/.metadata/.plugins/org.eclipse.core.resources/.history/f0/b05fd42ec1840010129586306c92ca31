@@ -1,0 +1,87 @@
+package com.example.user_service.service;
+
+import java.util.List;
+
+import java.util.Optional;
+import java.util.Random;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import com.example.user_service.entity.User;
+import com.example.user_service.exception.ResourceNotFoundException;
+import com.example.user_service.repository.UserRepository;
+
+@Service
+public class UserService {
+	
+	@Autowired
+	 private UserRepository userRepository;
+	
+	private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+	public User registerUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
+    }
+	 
+	 
+	 public boolean verifyOtp(String email, String otp) {
+	        Optional<User> optionalUser = userRepository.findByEmail(email);
+	        if (optionalUser.isPresent()) {
+	            User user = optionalUser.get();
+	            if (user.getOtp().equals(otp)) {
+	                user.setVerified(true);
+	                user.setOtp(null); // clear OTP after verification
+	                userRepository.save(user);
+	                return true;
+	            }
+	        }
+	        return false;
+	    }
+	
+	 
+	public Optional<User> getUserById(Long id) {
+        return userRepository.findById(id);
+    }
+	
+	public void deleteUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        userRepository.delete(user);
+    }
+	
+	public User editUser(Long id, User updatedUser) {
+	    User user = userRepository.findById(id)
+	            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+	    user.setName(updatedUser.getName());
+	    user.setEmail(updatedUser.getEmail());
+	    user.setPhone(updatedUser.getPhone());
+	    return userRepository.save(user);
+	}
+
+	 
+	 
+	 public boolean login(String username, String password) {
+	        Optional<User> optionalUser = userRepository.findByUsername(username);
+	        if (optionalUser.isPresent()) {
+	            User user = optionalUser.get();
+	            return user.isVerified() && passwordEncoder.matches(password, user.getPassword());
+	        }
+	        return false;
+	    }
+	 
+	 
+	 
+	 public List<User> getAllUsers() {
+	        return userRepository.findAll();
+	 }
+	 
+	 private String generateOtp() {
+	        Random random = new Random();
+	        int otp = 100000 + random.nextInt(900000); 
+	        return String.valueOf(otp);
+	    }
+	
+}

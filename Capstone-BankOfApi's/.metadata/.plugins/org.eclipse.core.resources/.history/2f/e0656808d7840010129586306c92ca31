@@ -1,0 +1,15 @@
+package com.example.account_service.service;
+
+public interface AccountService {
+	
+	Account createAccount(Account account);
+
+    Account updateAccount(Long accountId, Account account);
+
+    void deleteAccount(Long accountId);
+
+    List<Account> getAllAccountsByUserId(Integer userId);
+
+    Account getAccountById(Long accountId);
+
+}

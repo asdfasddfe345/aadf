@@ -1,0 +1,32 @@
+package com.example.user_service.security;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
+
+import org.springframework.stereotype.Component;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import javax.crypto.SecretKey;
+
+@Component
+public class JwtUtil {
+
+    private final SecretKey secretKey;
+
+    public JwtUtil() {
+        // Generate a secure key from your string (must be >= 256 bits)
+        secretKey = Keys.hmacShaKeyFor("My$uper$ecretKey1656!My$uper$ecretKey1656!".getBytes(StandardCharsets.UTF_8));
+        // I repeated the string to make it >= 256 bits
+    }
+
+    public String generateToken(String username) {
+        return Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 3600000)) // 1 hour
+                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .compact();
+    }
+}

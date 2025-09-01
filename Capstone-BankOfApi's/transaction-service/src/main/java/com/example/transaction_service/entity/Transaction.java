@@ -1,0 +1,95 @@
+package com.example.transaction_service.entity;
+
+import java.time.LocalDateTime;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
+public class Transaction {
+	
+	 @Id
+	    @GeneratedValue(strategy = GenerationType.AUTO)
+	    private Long transactionId;
+
+	    private Long fromAccountId;
+	    private Long toAccountId;
+	    private Double amount;
+	    private String transactiontype; 
+	    private LocalDateTime date_transaction;
+	    private Long accountId;
+
+	    private Long userId;
+	    
+	    
+	    
+
+		public Long getAccountId() {
+			return accountId;
+		}
+
+		public void setAccountId(Long accountId) {
+			this.accountId = accountId;
+		}
+
+		public Long getTransactionId() {
+			return transactionId;
+		}
+
+		public void setTransactionId(Long transactionId) {
+			this.transactionId = transactionId;
+		}
+
+		public Long getFromAccountId() {
+			return fromAccountId;
+		}
+
+		public void setFromAccountId(Long fromAccountId) {
+			this.fromAccountId = fromAccountId;
+		}
+
+		public Long getToAccountId() {
+			return toAccountId;
+		}
+
+		public void setToAccountId(Long toAccountId) {
+			this.toAccountId = toAccountId;
+		}
+
+		public Double getAmount() {
+			return amount;
+		}
+
+		public void setAmount(Double amount) {
+			this.amount = amount;
+		}
+
+		public String getTransactiontype() {
+			return transactiontype;
+		}
+
+		public void setTransactiontype(String transactiontype) {
+			this.transactiontype = transactiontype;
+		}
+
+		public LocalDateTime getDate_transaction() {
+			return date_transaction;
+		}
+
+		public void setDate_transaction(LocalDateTime date_transaction) {
+			this.date_transaction = date_transaction;
+		}
+
+		public Long getUserId() {
+			return userId;
+		}
+
+		public void setUserId(Long userId) {
+			this.userId = userId;
+		}
+	    
+	    
+
+}

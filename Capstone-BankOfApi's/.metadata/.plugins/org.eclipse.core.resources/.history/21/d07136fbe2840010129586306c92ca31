@@ -1,0 +1,38 @@
+package com.example.account_service.service;
+
+import javax.crypto.SecretKey;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class JwtUtil {
+
+	
+	private final SecretKey secretKey;
+
+    public JwtUtil() {
+        secretKey = Keys.hmacShaKeyFor(
+            "My$uper$ecretKey1656!My$uper$ecretKey1656!".getBytes(StandardCharsets.UTF_8)
+        );
+    }
+
+    public String extractUsername(String token) {
+        return getClaims(token).getSubject();
+    }
+
+    public boolean validateToken(String token) {
+        return !isTokenExpired(token);
+    }
+
+    private boolean isTokenExpired(String token) {
+        return getClaims(token).getExpiration().before(new Date());
+    }
+
+    private Claims getClaims(String token) {
+        return Jwts.parserBuilder()
+                   .setSigningKey(secretKey)
+                   .build()
+                   .parseClaimsJws(token)
+                   .getBody();
+    }
+}

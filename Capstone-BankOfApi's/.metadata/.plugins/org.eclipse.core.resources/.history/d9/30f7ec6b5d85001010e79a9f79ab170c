@@ -1,0 +1,39 @@
+package com.example.transaction_service.security;
+
+import java.nio.charset.StandardCharsets;
+
+import javax.crypto.SecretKey;
+
+import org.springframework.stereotype.Component;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.security.Keys;
+
+@Component
+public class JwtUtil {
+	
+
+	private final SecretKey secretKey;
+
+    public JwtUtil() {
+        secretKey = Keys.hmacShaKeyFor("My$uper$ecretKey1656!My$uper$ecretKey1656!".getBytes(StandardCharsets.UTF_8));
+    }
+    
+    public Long extractUserId(String token) {
+        Claims claims = getClaims(token);
+        Object userIdObj = claims.get("userId");
+    }
+
+    public boolean validateToken(String token) {
+        return !getClaims(token).getExpiration().before(new Date());
+    }
+
+    private Claims getClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+    
+}

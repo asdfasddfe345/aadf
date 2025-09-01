@@ -1,0 +1,70 @@
+package com.example.transaction_service.service;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
+import com.example.transaction_service.entity.Transaction;
+import com.example.transaction_service.repository.TransactionRepository;
+@Service
+public class TransactionServiceImpl implements TransactionService{
+
+	@Autowired
+    private TransactionRepository transactionRepository;
+
+    @Override
+    public Transaction createTransaction(Transaction transaction) {
+        transaction.setDate_transaction(LocalDateTime.now());
+        return transactionRepository.save(transaction);
+    }
+
+    @Override
+    public Transaction getTransactionById(Long transactionId) {
+        return transactionRepository.findById(transactionId).orElse(null);
+    }
+
+    @Override
+    public List<Transaction> getAllTransactions() {
+        return transactionRepository.findAll();
+    }
+
+    @Override
+    public List<Transaction> getTransactionsByUserId() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = (Long) principal;
+        return transactionRepository.findByUserId(userId);
+    }
+
+
+
+    @Override
+    public Transaction updateTransaction(Long transactionId, Transaction transaction) {
+        Optional<Transaction> existing = transactionRepository.findById(transactionId);
+        if (existing.isPresent()) {
+            Transaction t = existing.get();
+            t.setFromAccountId(transaction.getFromAccountId());
+            t.setToAccountId(transaction.getToAccountId());
+            t.setAmount(transaction.getAmount());
+            t.setTransactiontype(transaction.getTransactiontype());
+            return transactionRepository.save(t);
+        }
+        return null;
+    }
+
+    @Override
+    public void deleteTransaction(Long transactionId) {
+        transactionRepository.deleteById(transactionId);
+    }
+    
+    
+    
+    @Override
+    public List<Transaction> getTransactionsByAccountId(Long accountId) {
+        return transactionRepository.findByAccountId(accountId);
+    }
+	
+}

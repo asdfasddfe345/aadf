@@ -1,0 +1,22 @@
+package com.example.transaction_service.service;
+
+import java.util.List;
+
+import com.example.transaction_service.entity.Transaction;
+
+public interface TransactionService {
+	 Transaction createTransaction(Transaction transaction);
+
+	    Transaction getTransactionById(Long transactionId);
+
+	    List<Transaction> getAllTransactions();
+
+	    List<Transaction> getTransactionsByUserId();
+
+	    Transaction updateTransaction(Long transactionId, Transaction transaction);
+
+	    void deleteTransaction(Long transactionId);
+	    
+	    public List<Transaction> getTransactionsByAccountId(Long accountId); 
+	}
+
