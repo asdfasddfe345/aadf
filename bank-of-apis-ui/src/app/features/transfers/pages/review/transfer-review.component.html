@@ -1,0 +1,97 @@
+<div class="review-container">
+  <div class="page-header">
+    <h1>Review Transfer</h1>
+    <p>Please review the transfer details before confirming</p>
+  </div>
+
+  <mat-card class="review-card" *ngIf="transferData">
+    <mat-card-header>
+      <div mat-card-avatar class="review-avatar">
+        <mat-icon>preview</mat-icon>
+      </div>
+      <mat-card-title>Transfer Details</mat-card-title>
+      <mat-card-subtitle>Verify all information is correct</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <div class="review-details">
+        <div class="detail-row">
+          <span class="detail-label">From Account:</span>
+          <span class="detail-value">
+            {{ fromAccount?.accountType }} - #{{ transferData.fromAccountId }}
+          </span>
+        </div>
+        
+        <div class="detail-row">
+          <span class="detail-label">Available Balance:</span>
+          <span class="detail-value balance">{{ fromAccount?.accountBalance | currency }}</span>
+        </div>
+        
+        <mat-divider class="divider"></mat-divider>
+        
+        <div class="detail-row">
+          <span class="detail-label">To Account ID:</span>
+          <span class="detail-value">#{{ transferData.toAccountId }}</span>
+        </div>
+        
+        <div class="detail-row">
+          <span class="detail-label">Transaction Type:</span>
+          <span class="detail-value">{{ transferData.transactiontype }}</span>
+        </div>
+        
+        <mat-divider class="divider"></mat-divider>
+        
+        <div class="detail-row amount-row">
+          <span class="detail-label">Transfer Amount:</span>
+          <span class="detail-value amount">{{ transferData.amount | currency }}</span>
+        </div>
+        
+        <div class="detail-row" *ngIf="fees > 0">
+          <span class="detail-label">Transfer Fee:</span>
+          <span class="detail-value">{{ fees | currency }}</span>
+        </div>
+        
+        <div class="detail-row total-row">
+          <span class="detail-label">Total Deduction:</span>
+          <span class="detail-value total">{{ (transferData.amount + fees) | currency }}</span>
+        </div>
+      </div>
+      
+      <div class="security-notice">
+        <mat-icon>security</mat-icon>
+        <span>This transfer will be processed securely using bank-grade encryption</span>
+      </div>
+    </mat-card-content>
+    
+    <mat-card-actions class="review-actions">
+      <button mat-button (click)="goBack()" class="back-btn">
+        <mat-icon>arrow_back</mat-icon>
+        Back to Edit
+      </button>
+      <button mat-raised-button color="primary" 
+              (click)="confirmTransfer()" 
+              [disabled]="loading"
+              class="confirm-btn">
+        <mat-spinner diameter="20" *ngIf="loading"></mat-spinner>
+        <mat-icon *ngIf="!loading">check</mat-icon>
+        <span *ngIf="!loading">Confirm Transfer</span>
+        <span *ngIf="loading">Processing...</span>
+      </button>
+    </mat-card-actions>
+  </mat-card>
+
+  <div class="error-state" *ngIf="!transferData">
+    <mat-card>
+      <mat-card-content>
+        <div class="error-content">
+          <mat-icon class="error-icon">error</mat-icon>
+          <h2>No Transfer Data Found</h2>
+          <p>Please start a new transfer from the beginning.</p>
+          <button mat-raised-button color="primary" routerLink="/transfers">
+            Start New Transfer
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

@@ -1,0 +1,86 @@
+<div class="transfer-container">
+  <div class="page-header">
+    <h1>Transfer Funds</h1>
+    <p>Send money between your accounts or to other accounts</p>
+  </div>
+
+  <mat-card class="transfer-card">
+    <mat-card-header>
+      <div mat-card-avatar class="transfer-avatar">
+        <mat-icon>swap_horiz</mat-icon>
+      </div>
+      <mat-card-title>New Transfer</mat-card-title>
+      <mat-card-subtitle>Fill in the transfer details</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <form [formGroup]="transferForm" class="transfer-form">
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>From Account</mat-label>
+            <mat-select formControlName="fromAccountId">
+              <mat-option *ngFor="let account of accounts" [value]="account.accountId">
+                {{ account.accountType }} - #{{ account.accountId }} 
+                ({{ account.accountBalance | currency }})
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="transferForm.get('fromAccountId')?.hasError('required')">
+              Please select a source account
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>To Account ID</mat-label>
+            <input matInput type="number" formControlName="toAccountId" placeholder="Enter destination account ID">
+            <mat-error *ngIf="transferForm.get('toAccountId')?.hasError('required')">
+              Destination account ID is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Amount</mat-label>
+            <input matInput type="number" formControlName="amount" placeholder="0.00" min="0.01" step="0.01">
+            <span matTextPrefix>$&nbsp;</span>
+            <mat-error *ngIf="transferForm.get('amount')?.hasError('required')">
+              Amount is required
+            </mat-error>
+            <mat-error *ngIf="transferForm.get('amount')?.hasError('min')">
+              Amount must be greater than 0
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Transaction Type</mat-label>
+            <mat-select formControlName="transactiontype">
+              <mat-option value="TRANSFER">Transfer</mat-option>
+              <mat-option value="PAYMENT">Payment</mat-option>
+              <mat-option value="DEPOSIT">Deposit</mat-option>
+            </mat-select>
+            <mat-error *ngIf="transferForm.get('transactiontype')?.hasError('required')">
+              Please select a transaction type
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-actions">
+          <button mat-button type="button" routerLink="/dashboard" class="cancel-btn">
+            Cancel
+          </button>
+          <button mat-raised-button color="primary" 
+                  (click)="proceedToReview()" 
+                  [disabled]="transferForm.invalid || loading"
+                  class="review-btn">
+            <mat-icon>arrow_forward</mat-icon>
+            Review Transfer
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
